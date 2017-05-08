@@ -1,0 +1,36 @@
+html,body{
+	font-family: -apple-system,SF UI Display,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif
+}
+
+.content{
+	width: 650px;
+	margin: 0 auto;
+}
+
+.content > h2{
+	font-size: 28px;
+	color: #333;
+}
+
+.content > p{
+	color: #333;
+	text-indent:2em;
+	line-height: 30px;
+}
+
+.content > img{
+	width: 100%;
+	height: auto;
+}
+
+.content > .tips{
+	line-height: 15px;
+	text-align: right;
+	font-size: 13px;
+}
+
+.content > a{
+	color: #337ab7;
+	font-size: 13px;
+	text-decoration: none;
+}

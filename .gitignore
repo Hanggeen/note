@@ -1,0 +1,4 @@
+node_modules/
+sql/config.js
+public/node_modules/
+/sql/config.js
