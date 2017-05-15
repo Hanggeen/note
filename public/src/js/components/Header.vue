@@ -1,7 +1,8 @@
 <template>
 	<div>
 		<div class="header-date">
-      <img src="/images/bill.jpg" style="margin-left:-17px;">
+      <img src="/images/niamoi2.png" class="logo">
+      <span class="logotext">记录美好的每一天</span>
 			<div class="header-date-content">
                 <button v-on:click="logout" class="btn-logout"><span class="icon icon-switch"></span>退出</button>
                 <router-link to="/userMessage"><button class="btn-logout"><span class="icon icon-user"></span>{{name}}</button></router-link>
@@ -132,8 +133,8 @@
   top: 0;
   height: 100%;
   width: 200px;
-  border-right: 1px solid #ddd;
-  /*background-color: #fff;*/
+  border-right: 1px solid #aaa;
+  /*background-color: #eee;*/
   background-color: #353535;
   z-index: 99;
 }
@@ -146,15 +147,18 @@
   width: 200px;
 }
 .logo{
-  margin: 30px auto 10px auto;
-  display: block;
+  margin: 8px 0px 0px 15px;
+  height: 30px;
   width: 100px;
-  height: 100px;
-  vertical-align: middle;
-  background: url(../../images/wps2.png) no-repeat 0 0;
-  background-size: 100% 100%;
-  opacity: 0.8;
 }
+
+.logotext{
+      color: #fff;
+    position: relative;
+    top: -9px;
+    left: 9px;
+}
+
 .title{
   margin: 0px 10px 0px 10px;
   display: block;
@@ -172,15 +176,17 @@
   /*color: #333;*/
   color: #fff;
   display: block;
-  padding-left: 30px;
+  padding-left: 40px;
 }
 .menu a:hover{
   background-color: #494949;
+  /*background-color: #ccc;*/
   color: #fff;
 }
 
 .menu > .router-link-active{
   background-color: #444444;
+  /*background-color: #ccc;*/
 }
 .icon{
   font-size: 15px;
@@ -188,7 +194,7 @@
   top: -1px;
   vertical-align: middle;
   margin-right: 15px;
-  color: #666;
+  /*color: #666;*/
   color: #fff;
 }
 

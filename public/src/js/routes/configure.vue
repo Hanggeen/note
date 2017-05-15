@@ -79,27 +79,45 @@
 		methods: {
 			'add': function (kind) {
 				var val = this.$refs[kind].value;
-				this.config[kind].push(val);
-				this.$refs[kind].value = null;
+				if (val == null || val == "") {
+					swal("","输入为空","error");
+				} else if (val.length > 8) {
+					swal("","输入过长，请控制在8个字符以内","error");
+				} else {
+					this.config[kind].push(val);
+					this.$refs[kind].value = null;
+				}
 			},
 			'addCategory': function () {
 				var val = this.$refs.category.value;
-				this.config.category.push({
-					"name": val,
-					"value": []
-				});
-				this.$refs.category.value = null
+				if (val == null || val == "") {
+					swal("","输入为空","error");
+				} else if (val.length > 8) {
+					swal("","输入过长，请控制在8个字符以内","error");
+				} else {
+					this.config.category.push({
+						"name": val,
+						"value": []
+					});
+					this.$refs.category.value = null
+				}
 			},
 			'addSort': function (name) {
 				var self = this;
 				var val = this.$refs[name][0].value;
-				this.config.category.forEach(function(item, index, array){
-					if (item.name == name) {
-						item.value.push(val);
-						self.$refs[name][0].value = null
-					}
-				})
-				console.log(this.$refs[name][0].value)
+
+				if (val == null || val == "") {
+					swal("","输入为空","error");
+				} else if (val.length > 8) {
+					swal("","输入过长，请控制在8个字符以内","error");
+				} else {
+					this.config.category.forEach(function(item, index, array){
+						if (item.name == name) {
+							item.value.push(val);
+							self.$refs[name][0].value = null
+						}
+					})
+				}
 			},
 			'deleteLabel': function (kind, index) {
 				this.config[kind].splice(index,1);
@@ -131,7 +149,6 @@
 					"role": self.config.role
 				}
 
-				console.log(JSON.stringify(data));
 
 
 				window.ajax.simpost('/api/updateConfig',{
@@ -163,7 +180,6 @@
 
 						self.config = result.result;
 						self.config.category = category;
-						console.log(self.config);
 					} else {
 						swal("加载失败","请检查您的网络","error");
 					}
@@ -186,13 +202,11 @@
 
 					self.config = result.result;
 					self.config.category = category;
-					console.log(self.config);
 				} else {
 					swal("加载失败","请检查您的网络","error");
 				}
 			})
 
-			// setTimeout(function(){console.log(self.)},4000)
 
 
 		}

@@ -149,8 +149,6 @@
 					num = 0;
 				}
 				date = date.valueOf() + (num*3600*24*1000);
-				console.log(date);
-				console.log(this.format(date));
 				return this.format(date);
 			},
 			fetchBill: function (date) {
@@ -160,7 +158,6 @@
 					endDate: date.endDate
 				}, function (error, result) {
 					if (result.errorCode == 0) {
-						console.log(result);
 						self.bill = result.result;
 						self.render();
 					} else {

@@ -77,8 +77,6 @@ module.exports = {
 		option.xAxis.data = date;
 		option.series = series;
 
-		console.log(option);
-
 		return option;
 	},
 	categoryPie: function (data) {
@@ -108,7 +106,6 @@ module.exports = {
 		var option = deepCopy(options.pie);
 		option.legend.data = legend;
 		option.series[0].data = series;
-		console.log(series)
 		return option;
 	},
 	categoryList: function (data) {
@@ -221,7 +218,6 @@ module.exports = {
 		var option = deepCopy(options.pie);
 		option.legend.data = legend;
 		option.series[0].data = series;
-		console.log(series)
 		return option;
 	},
 	categoryRadar: function (data) {

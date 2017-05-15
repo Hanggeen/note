@@ -24,7 +24,7 @@
 						</div>
 						<div class="form-cube gap">
 							<label>金额</label>
-							<input v-model="custom.price" class="text-input" style="width:50px" placeholder="">
+							<input  type="number" v-model="custom.price" class="text-input" style="width:50px" placeholder="">
 						</div>
 					</div>
 					<div class="form-row" style="font-size:12px;color: #666">
@@ -183,10 +183,6 @@
 				selectedCategory: null
 			}
 		},
-		components: {
-		},
-		watch: {
-		},
 		methods: {
 			/*格式化时间，把date对象变成yyyy-mm-dd格式*/
 			format: function (date) {
@@ -206,29 +202,34 @@
 					num = 0;
 				}
 				date = date.valueOf() + (num*3600*24*1000);
-				console.log(date);
-				console.log(this.format(date));
 				return this.format(date);
 			},
 			'saveCustom': function () {
-				console.log(this.custom);
 				var self = this;
-				window.ajax.simpost('/api/record', self.custom, function (error, result) {
-					if (result.errorCode == 0) {
-						swal("保存成功","一条记录已插入","success");
-						self.custom.date = self.getTodayDate();
-						self.custom.note = null;
-						self.custom.price = null;
-						self.custom.category = null;
-						self.custom.sort = null;
-						self.custom.payway = null;
-						self.custom.project = null;
-						self.custom.role = null;
-						console.log(result);
-					} else {
-						swal("保存失败",result.errorCode,"error");
-					}
-				})
+				if (self.custom.note == null) {
+					swal("","备注不能为空哦~","error");
+				} else if (self.custom.price == "" || self.custom.price == null) {
+					swal("","价格不能为空哦~","error");
+				} else if (Number(self.custom.price) == NaN) {
+					swal("","价格要为数值哦~","error");
+				} else {
+					window.ajax.simpost('/api/record', self.custom, function (error, result) {
+						if (result.errorCode == 0) {
+							swal("保存成功","一条记录已插入","success");
+							// self.custom.date = self.getTodayDate();
+							self.custom.note = null;
+							self.custom.price = null;
+							self.custom.category = null;
+							self.custom.sort = null;
+							self.custom.payway = null;
+							self.custom.project = null;
+							self.custom.role = null;
+						} else {
+							swal("保存失败",result.errorCode,"error");
+						}
+					})
+				}
+
 			},
 			'deploy': function () {
 				var self = this;
@@ -254,7 +255,6 @@
 			var self = this;
 			window.ajax.simpost('/api/fetchConfig',function (error, result) {
 				if (result.errorCode == 0) {
-					console.log(result);
 					self.config = result.result;
 					self.loading = false;
 					self.deploy();

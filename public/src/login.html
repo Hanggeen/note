@@ -21,16 +21,18 @@
 			width: 250px;
 		}
 		.logo{
+			position: relative;
+			top: -4px;
 		  display: inline-block;
-		  width:50px;
-		  height: 50px;
+		  width:100px;
+		  height: 30px;
 		  border-radius: 8px;
 		  vertical-align: middle;
-		  background: url(./images/logo.png) no-repeat 0 0;
+		  background: url(./images/niamoi2.png) no-repeat 0 0;
 		  background-size: 105% 100%;
 		}
 		.header > span{
-			margin-left: 5px;
+			float: right;
 			color: #fff;
 		}
 		.form > input{
@@ -77,11 +79,11 @@
 	<div class="container">
 		<div class="header">
 			<div class="logo"></div>
-			<span>记账，从今天开始</span>
+			<span>登录我的账号</span>
 		</div>
 		<div class="form">
-			<input id="account" type="text" placeholder="请输入用户名">
-			<input id="password" type="password" placeholder="请输入密码">
+			<input id="account" type="email" placeholder="请输入注册邮箱" maxlength="30">
+			<input id="password" type="password" placeholder="请输入密码" maxlength="16">
 		</div>
 		<div class="version">
 			<span id="current"></span>
@@ -89,7 +91,7 @@
 			<a id="register" style="" href="/register.html">注册账号</a>
 		</div>
 		<div>
-			<button id="login">登录</button>
+			<button  type="submit" id="login">登录</button>
 		</div>
 		<div id="tips"></div>
 	</div>
@@ -182,35 +184,58 @@
 	        	}
 	    	})
         }
+
+        function checkEmail(str){
+    		var re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+    		if(re.test(str)){
+    			return(true);
+   			}else{
+    		    return(false);
+		    }
+		}
+
         /*登录操作*/
         function login () {
         	var account = document.getElementById('account').value,
         		password = document.getElementById('password').value;
-	       	window.ajax({
-	        	method: 'POST',
-	        	url: '/api/login',
-	        	headers: {
-	        		'Content-Type': 'application/json'
-	        	},
-	        	body: JSON.stringify({'account':account,'password':password}),
-	        	callback: function(error,result){
 
-	        		console.log(result);
+        	if (account == "" || account == null) {
+        		setTips('邮箱不能为空');
+        	} else if (password == "" || account == null) {
+        		setTips('密码不能为空');
+        	} else if (password.length < 6) {
+        		setTips('密码长度太短');
+        	} else if (!checkEmail(account)) {
+        		setTips('邮箱格式错误');
+        	} else {
+	        	window.ajax({
+		        	method: 'POST',
+		        	url: '/api/login',
+		        	headers: {
+		        		'Content-Type': 'application/json'
+		        	},
+		        	body: JSON.stringify({'account':account,'password':password}),
+		        	callback: function(error,result){
 
-	        		if(error !== null){
-	        			console.log(error);
-	        			setTips('网络错误');
-	        		} else {
-	        			if (result.errorCode == 0) {
-							window.location.href='./'; 
-	        			} else if (result.errorCode == 1){
-	        				setTips('用户名或密码错误');
-	        			} else {
-	        				setTips('errorCode:'+result.errorCode);
-	        			}
-	        		}
-	        	}
-	    	});
+		        		console.log(result);
+
+		        		if(error !== null){
+		        			console.log(error);
+		        			setTips('网络错误');
+		        		} else {
+		        			if (result.errorCode == 0) {
+								window.location.href='./'; 
+		        			} else if (result.errorCode == 1){
+		        				setTips('邮箱或密码错误');
+		        			} else {
+		        				setTips('errorCode:'+result.errorCode);
+		        			}
+		        		}
+		        	}
+		    	});
+        	}
+
+
         }
 
         /*绑定点击事件*/

@@ -132,14 +132,6 @@
 				var self = this;
 				var bill = [];
 				self.allbill.forEach(function (item, index, array) {
-					console.log(self.filter.category == null);
-
-
-					// if (self.filter.category == '全部' || self.filter.category == item.category) {
-					// 	if (self.filter.keyword == '' || item.note.indexOf(self.filter.keyword) != -1) {
-					// 		bill.push(item);
-					// 	}
-					// }
 
 					if (self.filter.category != '全部' && self.filter.category != item.category);
 					else if (self.filter.sort != '全部' && self.filter.sort != item.sort);
@@ -171,8 +163,6 @@
 					num = 0;
 				}
 				date = date.valueOf() + (num*3600*24*1000);
-				console.log(date);
-				console.log(this.format(date));
 				return this.format(date);
 			},
 			fetchBill: function (date) {
@@ -182,7 +172,6 @@
 					endDate: date.endDate
 				}, function (error, result) {
 					if (result.errorCode == 0) {
-						console.log(result);
 						self.bill = result.result;
 						self.allbill = result.result;
 						self.loading = false;
@@ -206,7 +195,6 @@
 							endDate: self.date.endDate
 						}, function (error, result) {
 							if (result.errorCode == 0) {
-								console.log(result);
 								self.bill = result.result;
 								self.allbill = result.result;
 								self.loading = false;
@@ -239,7 +227,6 @@
 				endDate: self.date.oneDate
 			}, function (error, result) {
 				if (result.errorCode == 0) {
-					console.log(result);
 					self.bill = result.result;
 					self.allbill = result.result;
 					self.loading = false;
