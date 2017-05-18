@@ -16,7 +16,7 @@ button{
 }
 
 
-
+.clear{ clear:both} 
 
 
 @font-face {
@@ -95,24 +95,6 @@ button{
 }
 
 #app{
-	padding-top: 40px;
-}
-
-.header{
-	position: fixed;
-	top: 0px;
-	left: 0px;
-	height: 40px;
-	width: 100%;
-	background-color: #353535;
-}
-
-
-.header > img{
-	display: block;
-	margin: 4px auto;
-	width: 100px;
-	height: 30px;
 }
 
 
@@ -232,6 +214,9 @@ button{
 
 
 
+.detail{
+  padding-bottom: 90px;
+}
 
 .detail-table{
 	width: 100%;
@@ -241,10 +226,52 @@ button{
     border-collapse: collapse;
 }
 
+.detail-table > thead > tr > th{
+  background-color: #f3f3f3;
+  padding: 15px 0px;
+}
+
 .detail-table > tbody > tr > td{
 	padding: 15px 0px;
 }
 
-.detail-table>tbody>tr:nth-of-type(odd) {
+.detail-table>tbody>tr:nth-of-type(even) {
     background-color: #f3f3f3;
+}
+
+
+
+.report-cube{
+  box-sizing: border-box;
+  padding: 10px;
+  float: left;
+  margin-bottom: 15px;
+  width: 48%;
+  height: 80px;
+  background-color: #ccc;
+}
+
+.report-cube > p {
+  font-size: 14px;
+  color: #fff;
+}
+.report-cube > h1 {
+  margin-top: 6px;
+  text-align: right;
+  color: #fff;
+}
+.report-cube > h3 {
+  margin-top: 18px;
+  text-align: right;
+  color: #fff;
+}
+
+
+.logout{
+  border-radius: 5px;
+  font-size: 14px;
+  color: #fff;
+  height: 30px;
+  width: 100%;
+  background-color: #FF6A6A;
 }

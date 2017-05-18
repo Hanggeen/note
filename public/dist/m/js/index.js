@@ -2,6 +2,7 @@ var app = new Vue({
 	el: '#app',
 	data: function (){
 		return {
+			name: '',
 			recordSaveBtn: true,
 			custom: {
 				date: this.getTodayDate(),
@@ -17,7 +18,13 @@ var app = new Vue({
 				category: {}
 			},
 			active: 'record',
-			bill: []
+			bill: [],
+			message: {
+				sum: 0,
+				highestNote: '',
+				dayNum: 0,
+				quantity: 0
+			}
 		}
 	},
 	watch: {
@@ -201,10 +208,328 @@ var app = new Vue({
 			})
 		},
 		'renderReport': function () {
+			var self = this;
+			self.$nextTick(function () {
+				window.ajax.simpost('/api/fetchBill', {
+					startDate: '2017-01-01',
+					endDate: self.getTodayDate()
+				}, function (error, result) {
+					if (result.errorCode == 0) {
+						self.bill = result.result;
+						self.renderMessage();
+						self.renderPie();
+						self.renderLine();
+						self.renderBar();
+					} else {
+						swal("加载失败","请检查您的网络","error");
+					}
+				})
+
+			});
+		},
+		renderMessage: function () {
+
+			var self = this;
+			var data = self.bill;
+
+			var sum = 0;
+			data.forEach(function (o, index, array) {
+				sum += o.price
+			});
+			self.message.sum = sum;
+
+
+			if (data.length == 0) {
+				self.message.highestNote = '无';
+			} else {
+				var highest = {
+					price: -2
+				}
+				data.forEach(function (o, index, array) {
+					if (o.price > highest.price) {
+						highest = o;
+					}
+				});
+				self.message.highestNote = highest.note;
+			}
+
+
+			var date = '';
+			var num = 0;
+			data.forEach(function (o, index, array) {
+				if (o.date != date) {
+					num ++;
+					date = o.date;
+				}
+			});
+			self.message.dayNum = num;
+
+			self.message.quantity = data.length;
+
+
+
 
 		},
 		'renderUser': function () {
+			var self = this;
+            window.ajax.simpost('/api/fetchUser',function (error, result) {
+                self.name = result.result.name;
 
+            })
+		},
+		'renderPie': function () {
+			var self = this;
+
+			// 基于准备好的dom，初始化echarts实例
+			var dom = document.getElementById('chartPie')
+            dom.style.width = (window.screen.width - 40) + 'px';
+            dom.style.height = (window.screen.width - 40) + 'px';
+            var myChart = echarts.init(dom);
+
+            if (self.bill.length == 0) {
+                myChart.clear();
+                myChart.showLoading({
+                    text: '暂无数据',
+                    color: 'rgba(255, 255, 255, 0)',
+                    textColor: '#000',
+                    maskColor: '#fff',
+                    zlevel: 0
+                });
+            } else {
+				var o = {
+				    title: {
+				        text: '消费种类占比',
+				        x:'left',
+				        textStyle: {
+				            color: '#666',
+				            fontSize: '15',
+				            fontWeight: '100'
+				        }
+				    },
+				    tooltip: {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b}: {c} ({d}%)"
+				    },
+				    series: [
+				        {
+				            name:'访问来源',
+				            type:'pie',
+				            radius: ['30%', '50%'],
+
+				            data:[
+				                {value:335, name:'直达'},
+				                {value:310, name:'邮件营销'},
+				                {value:234, name:'联盟广告'},
+				                {value:135, name:'视频广告'},
+				                {value:1048, name:'百度'},
+				                {value:251, name:'谷歌'},
+				                {value:147, name:'必应'},
+				                {value:102, name:'其他'}
+				            ]
+				        }
+				    ],
+	    			backgroundColor: '#f5f7f9'
+				}
+				var data = self.bill;
+				var pie = {},
+					legend = [],
+					series = [];
+				data.forEach(function (o, index, array) {
+					if (o.category == null) {
+						o.category = '不填';
+					}
+					if (pie[o.category] == undefined) {
+						pie[o.category] = o.price;
+					} else {
+						pie[o.category] += o.price;
+					}
+				});
+				for (var key in pie) {
+					legend.push(key);
+					series.push({name: key, value: pie[key]});
+				}
+				o.series[0].data = series;
+	            myChart.setOption(o);
+            }
+		},
+		'renderLine': function () {
+			var self = this;
+
+			// 基于准备好的dom，初始化echarts实例
+			var dom = document.getElementById('chartLine')
+            dom.style.width = (window.screen.width - 40) + 'px';
+            dom.style.height = (window.screen.width - 40) + 'px';
+            var myChart = echarts.init(dom);
+
+            if (self.bill.length == 0) {
+                myChart.clear();
+                myChart.showLoading({
+                    text: '暂无数据',
+                    color: 'rgba(255, 255, 255, 0)',
+                    textColor: '#000',
+                    maskColor: '#fff',
+                    zlevel: 0
+                });
+            } else {
+				var option = {
+				    title: {
+				        text: '每日消费总和趋势',
+				        x:'left',
+				        textStyle: {
+				            color: '#666',
+				            fontSize: '15',
+				            fontWeight: '100'
+				        }
+				    },
+				    tooltip: {
+				        trigger: 'axis'
+				    },
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '3%',
+				        containLabel: true
+				    },
+				    xAxis: {
+				        type: 'category',
+				        boundaryGap: false,
+				        data: []
+				    },
+				    yAxis: {
+				        type: 'value'
+				    },
+				    series: [],
+	    			backgroundColor: '#f5f7f9'
+				}
+				var data = self.bill;
+				var legend = ['当日消费'],
+					date = [],
+					daysum = [],
+					sum = 0,
+					o = {},
+					series = [];
+
+				data.forEach(function (item, index, array) {
+					if (date.indexOf(item.date.slice(5)) == -1) {
+						date.push(item.date.slice(5));
+						daysum.push(sum);
+						sum = 0;
+					}
+					sum += item.price;
+				})
+				daysum.push(sum);
+				daysum.shift();
+
+				series.push({name: '当日消费',type: 'line',data: daysum});
+
+				option.xAxis.data = date;
+				option.series = series;
+	            myChart.setOption(option);
+            }
+		},
+		'renderBar': function () {
+			var self = this;
+
+			// 基于准备好的dom，初始化echarts实例
+			var dom = document.getElementById('chartBar')
+            dom.style.width = (window.screen.width - 40) + 'px';
+            dom.style.height = (window.screen.width - 40) + 'px';
+            var myChart = echarts.init(dom);
+
+            if (self.bill.length == 0) {
+                myChart.clear();
+                myChart.showLoading({
+                    text: '暂无数据',
+                    color: 'rgba(255, 255, 255, 0)',
+                    textColor: '#000',
+                    maskColor: '#fff',
+                    zlevel: 0
+                });
+            } else {
+				var option = {
+				    title: {
+				        text: '每日消费与占比',
+				        x:'left',
+				        textStyle: {
+				            color: '#666',
+				            fontSize: '15',
+				            fontWeight: '100'
+				        }
+				    }, 
+				    tooltip : {
+				    	trigger: 'axis',
+				        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+				            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+				        }
+				    },
+				    legend: {
+				    	bottom: 5,
+				    	data: []
+				    },
+				    grid: {
+				    	left: '3%',
+				    	right: '4%',
+				    	bottom: '20%',
+				    	containLabel: true
+				    },
+				    xAxis:  {
+				    	type: 'category',
+				    	data: []
+				    },
+				    yAxis: {
+				    	type: 'value'
+				    },
+				    series: [],
+	    			backgroundColor: '#f5f7f9'
+				}
+				var data = self.bill;
+
+				var legendObject = {},
+					date = [],
+					legend = [],
+					series = [];
+
+				data.forEach(function (o, index, array) {
+					if (o.category == null) {
+						o.category = '不填';
+					}
+					if (legendObject[o.category] == undefined) {
+						legendObject[o.category] = [];
+					}
+					if (date.indexOf(o.date.slice(5)) == -1) {
+						date.push(o.date.slice(5));
+					}
+				});
+
+				data.forEach(function (o, index, array) {
+
+					var dateIndex = date.indexOf(o.date.slice(5));
+
+					if (legendObject[o.category][dateIndex] == undefined) {
+						legendObject[o.category][dateIndex] = o.price;
+					} else {
+						legendObject[o.category][dateIndex] += o.price;
+					}
+
+				});
+
+				for(var key in legendObject) {
+					legend.push(key);
+					series.push({
+						name: key,
+						type: 'bar',
+						stack: '总量',
+						data: legendObject[key]
+					})
+				}
+
+				option.legend.data = legend;
+				option.xAxis.data = date;
+				option.series = series;
+
+
+	            myChart.setOption(option);
+            }
 		}
 	},
 	mounted: function () {
