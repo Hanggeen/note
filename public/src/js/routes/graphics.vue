@@ -43,7 +43,7 @@
 		<echart :config="paywayPie"></echart>
 		<div class="category-list">
 			<div class="category-list-title">
-				消费类型排行
+				支付类型排行
 			</div>
 			<div v-if="paywayList.length == 0">
 				<p style="text-align:center;margin-top:120px;">暂无数据</p>

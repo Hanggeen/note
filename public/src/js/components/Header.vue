@@ -17,7 +17,7 @@
                     <router-link to="/graphics"><span class="icon icon-stats-bars2"></span>报表</router-link>
                     <router-link to="/analysis"><span class="icon icon-profile"></span>分析</router-link>
                   <router-link to="/configure"><span class="icon icon-equalizer"></span>配置</router-link>
-                  <router-link to="/community"><span class="icon icon-book"></span>社区</router-link>
+                  <router-link to="/community"><span class="icon icon-book"></span>阅读</router-link>
               </div>
           </div>
       </div>

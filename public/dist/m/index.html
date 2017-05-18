@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<title>niamoi | 记账</title>
+	<link rel="stylesheet" type="text/css" href="./css/sweetalert2.css">
+	<link rel="stylesheet" type="text/css" href="./css/style.css">
+	<link rel="stylesheet" type="text/css" href="./css/calender.css">
+	<script src="https://cdn.bootcss.com/vue/2.3.3/vue.min.js"></script>
+</head>
+<body>
+	<div id="app" v-cloak>
+		<div class="header">
+			<img src="../images/niamoi2.png">
+		</div>
+		<div class="content">
+			<div class="cube record" v-if="active=='record'">
+				<div class="record-row">
+					<label>日期</label>
+					<div ref="recordDate" class="date">{{custom.date}}</div>
+				</div>
+				<div class="record-row">
+					<label>金额</label>
+					<input class="record-price" type="number" v-model="custom.price" >
+				</div>
+				<div class="record-row">
+					<label>备注</label>
+					<input v-model="custom.note" class="record-note" type="text" maxlength="20" placeholder="买了什么/吃了什么/用在什么地方...">
+				</div>
+				<div class="record-row">
+					<label>种类</label>
+					<select class="record-select"  v-model="custom.category">
+						<option value="null">不填</option>
+						<option v-for="(item, index) in config.category">{{index}}</option>
+					</select>
+				</div>
+				<div class="record-row">
+					<label>类型</label>
+					<select class="record-select" v-model="custom.sort">
+						<option value="null">不填</option>
+						<option v-for="item in config.category[custom.category]">{{item}}</option>
+					</select>
+				</div>
+				<div class="record-row">
+					<label>支付</label>
+					<select class="record-select" v-model="custom.payway">
+						<option value="null">不填</option>
+						<option v-for="item in config.payway">{{item}}</option>
+					</select>
+				</div>
+				<div class="record-row">
+					<label>项目</label>
+					<select class="record-select" v-model="custom.project">
+						<option value="null">不填</option>
+						<option v-for="item in config.project">{{item}}</option>
+					</select>
+				</div>
+				<div class="record-row">
+					<label>角色</label>
+					<select class="record-select" v-model="custom.role">
+						<option value="null">不填</option>
+						<option v-for="item in config.role">{{item}}</option>
+					</select>
+				</div>
+				<div>
+					<button class="record-save" v-on:click="recordSave">{{recordSaveBtn?'保存':'提交中'}}</button>
+				</div>
+			</div>
+			<div class="cube detail" v-if="active=='detail'">
+				<div>
+					<table class="detail-table">
+						<thead>
+							<tr>	
+								<th>日期</th>
+								<th>备注</th>
+								<th>价格</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="(o,index) in bill">
+								<td>{{o.date.slice(5)}}</td>
+								<td style="max-width: 180px;">{{o.note}}</td>
+								<td>{{o.price}}</td>
+								<td>
+									<span style="color:#429DC1" v-on:click="showDetail(index)">详情</span>
+									<span style="color:#ED2822" v-on:click="deleteDetail(o.id,index)">删除</span>
+								</td>
+							</tr>
+						</tbody>
+
+					</table>
+				</div>
+			</div>
+			<div class="cube" v-if="active=='report'">
+				{{active}}
+			</div>
+			<div class="cube" v-if="active=='user'">
+				<button v-on:click="logout">退出</button>
+			</div>
+		</div>
+		<div class="footer">
+			<div class="menu">
+				<div class="menu-btn" v-on:click="jump('record')" v-bind:class="{ active: active=='record' }">
+					<span class="icon icon-pencil"></span><br/>
+					记账
+				</div>
+				<div class="menu-btn" v-on:click="jump('detail')" v-bind:class="{ active: active=='detail' }">
+					<span class="icon icon-file-text2"></span><br/>
+					明细
+				</div>
+				<div class="menu-btn" v-on:click="jump('report')" v-bind:class="{ active: active=='report' }">
+					<span class="icon icon-stats-bars2"></span><br/>
+					报表
+				</div>
+				<div class="menu-btn" v-on:click="jump('user')" v-bind:class="{ active: active=='user' }">
+					<span class="icon icon-user"></span><br/>
+					个人
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="https://cdn.bootcss.com/echarts/3.5.4/echarts.simple.min.js"></script>
+	<script src="./js/sweetalert2.min.js"></script>
+	<script src="./js/calender.js"></script>
+	<script src="./js/ajax.js"></script>
+	<script src="./js/index.js"></script>
+</body>
+</html>

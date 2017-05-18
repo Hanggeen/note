@@ -1,7 +1,7 @@
 <template>
 	<div class="content">
 		<div class="content-title" v-show="showList">
-			<p>社区 | Community<a v-on:click="back" class="com-back" v-show="!showList">返回上一级</a></p>
+			<p>阅读 | Reading<a v-on:click="back" class="com-back" v-show="!showList">返回上一级</a></p>
 		</div>
 		<div class="com-body">
 			<div class="com-row" v-show="showList">
